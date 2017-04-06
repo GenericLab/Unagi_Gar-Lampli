@@ -12,5 +12,5 @@ IC1 1 8Pin-DIL-Socket DILB8P-223TLF Amphenol FCI 649-DILB8P223TLF
 IC1	1	Attiny85	ATtiny85-20PU	Microchip Technology / Atmel	556-ATTINY85-20PU
 B1	1	Button	95C04A3GWRT	Grayhill	706-95C04A3GWRT
 Buz	1	Buzzer/speaker	PS1550L40N	TDK	810-PS1550L40N
-Jack	1	Mini-Jack female 3.5mm	SJ-43504-SMT-TR	CUI	490-SJ-43504-SMT-TR
+Jack	1	Mini-Jack female 3.5mm	SJ1-3525N	CUI	490-SJ1-3525N
 Sensor	1	Temperature Sensor	DS18B20+	Maxim Integrated	700-DS18B20+
