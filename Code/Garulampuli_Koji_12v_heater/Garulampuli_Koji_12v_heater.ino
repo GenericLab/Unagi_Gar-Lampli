@@ -9,7 +9,6 @@
 // The DallasTemperature library can do all this work for you!
 // http://milesburton.com/Dallas_Temperature_Control_Library
 
-
 #define ONEWIREPIN   PB4
 #define NEOPIXELPIN    0
 #define NUMPIXELS      64
@@ -18,6 +17,7 @@
 #define hell          255 // Brightness
 #define lowTemp       20
 #define maxTemp       42
+#define targetTemp    35
 #define warnTemp      20
 #define warnAlarm     10 // How often it beeps when below warnTemp
 
@@ -26,7 +26,8 @@
   uint8_t statusLED = 150;
   int16_t tempColor = 0;
   int showPixel = 0;
-
+  
+  uint8_t n;
   byte i;
   byte present = 0;
   byte type_s;
@@ -37,6 +38,7 @@
 
 OneWire  ds(ONEWIREPIN);  // on pin 10 (a 4.7K resistor is necessary)
 
+// for the 12V strips
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, NEOPIXELPIN, NEO_RGB + NEO_KHZ800);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,6 +110,16 @@ uint32_t Wheel(byte WheelPos) {
   return pixels.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* make some music
+========================================================================================================================
+   _________                      
+  |playSound|  
+  |  o___o  | 
+  |__/___\__| 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
 // fast pin access
 #define AUDIOPIN (1<<SPEAKERPIN)
 #define PINLOW (PORTB&=~AUDIOPIN)
@@ -176,7 +188,7 @@ void setup(void) {
   pixels.begin();
   pixels.setBrightness(brightness);
   
-  rainbowCycle(5,2,16);
+  rainbowCycle(3,2,64);
   
   for ( int i = brightness; i > 0; i--) {         
     pixels.setBrightness(i);
@@ -189,17 +201,8 @@ void setup(void) {
   pixels.setBrightness(brightness);
   pixels.show(); // Initialize all pixels to 'off'
     
-  playMart(c);
-  //setColorAllPixel(120);
-  uint8_t n;
-  for (n = 0; n < NUMPIXELS; n++)
-  {
-    //pixels.setPixelColor(n, 255, 150, 0);
-    //pixels.setPixelColor(n, 255, 255, 100);
-  }
-  setWhiteAllPixel(255);
-  pixels.show();
-  
+  //playMart(c);
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,12 +270,15 @@ void loop(void) {
   }
   celsius = (float)raw / 16.0;
   int16_t recalc =  raw / 16;
+
+//temperature monitor
   
-  tempColor = map(celsius, lowTemp, maxTemp, 160, 00);
+  tempColor = map(celsius, lowTemp, maxTemp, 160, 0);
   if (tempColor < 5) tempColor = 0;
   if (tempColor > 160) tempColor = 160;
   for (int n = 1; n <= 7; n++) {
-      pixels.setPixelColor(n, Wheel(tempColor));
+      uint32_t rgbcolor = pixels.ColorHSV(tempColor<<8, 255, 80);
+      pixels.setPixelColor(n, rgbcolor);
     }
 
   showPixel = map(recalc, lowTemp, maxTemp, 7, 1);
@@ -280,16 +286,31 @@ void loop(void) {
   if (showPixel > 7) showPixel = 7;
   pixels.setPixelColor(showPixel, 255,0,255);
   pixels.show();
-  /*
-  for ( int i = 0; i < blinkeSpeed; i++) { 
-    pixels.setPixelColor(showPixel, 0,0,0);
-    pixels.show();
-    delay(updateSpeed/blinkeSpeed/2);
-    pixels.setPixelColor(showPixel, 255,255,255);
-    pixels.show();
-    delay(updateSpeed/blinkeSpeed/2);
+
+//temperature controlling
+
+  if (celsius <= targetTemp){
+    for (n = 8; n < NUMPIXELS; n += 2) {
+    pixels.setPixelColor(n, 255, 200, 80);
+    }
+    for (n = 9; n < NUMPIXELS; n += 2) {
+    pixels.setPixelColor(n, 255, 30, 0);
+    }
   }
-  */
+
+  if (celsius > targetTemp){
+    for (n = 8; n < NUMPIXELS; n++) {
+    pixels.setPixelColor(n, 0, 150, 0);
+    }
+  }
+
+  if (celsius > (targetTemp+2)){
+    for (n = 8; n < NUMPIXELS; n++) {
+    pixels.setPixelColor(n, 0, 80, 50);
+    }
+  }
+
+//warning Alarm
   
   if (celsius < warnTemp){
     warnCount++;
