@@ -294,13 +294,13 @@ void loop(void) {
     pixels.setPixelColor(n, 255, 200, 80);
     }
     for (n = 9; n < NUMPIXELS; n += 2) {
-    pixels.setPixelColor(n, 255, 30, 0);
+    pixels.setPixelColor(n, 255, 40, 0);
     }
   }
 
   if (celsius > targetTemp){
     for (n = 8; n < NUMPIXELS; n++) {
-    pixels.setPixelColor(n, 0, 150, 0);
+    pixels.setPixelColor(n, 80, 200, 30);
     }
   }
 
