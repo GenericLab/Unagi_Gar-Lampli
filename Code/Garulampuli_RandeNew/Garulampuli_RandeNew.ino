@@ -145,7 +145,7 @@ void playMart(int notes[])
   // iterate over the notes of the melody:
   for (int thisNote = 0; thisNote <= 11; thisNote++) {
 
-    displayBinrayValue(notes[thisNote],pixels.Color(90,0,0));
+    displayBinrayValue(notes[thisNote],pixels.Color(90,0,90));
     pixels.show(); // This sends the updated pixel color to the hardware.
     playSound( notes[thisNote], noteDuration_ms);
     setColorAllPixel(0); // pixels off
@@ -209,7 +209,7 @@ void loop(void) {
 
     ds.reset_search();
     
-    pixels.setPixelColor(0, 0,50,50);
+    pixels.setPixelColor(0, 3,0,3);
     pixels.show();
     delay(updateSpeed>>3);
     return;

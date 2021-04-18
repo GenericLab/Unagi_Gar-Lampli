@@ -221,7 +221,7 @@ void loop(void) {
 
     ds.reset_search();
     
-    pixels.setPixelColor(0, 0,50,50);
+    pixels.setPixelColor(0,0,4,3);
     pixels.show();
     delay(updateSpeed>>3);
     return;
